@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santa Maria Minas · Ocorrências</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.6.0/dist/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#1C3A6E;--blue:#2558A8;--blue-l:#4A90D9;--sky:#E8F1FC;
+  --bg:#F4F7FB;--white:#fff;--text:#1A2332;--text2:#4A5568;--text3:#8896B0;
+  --border:#E2E8F0;--green:#16A34A;--greenpale:#DCFCE7;--amber:#D97706;
+  --amberpale:#FEF3C7;--red:#DC2626;--redpale:#FEE2E2;--purple:#7C3AED;--purplepale:#EDE9FE;
+  --sw:248px;--hh:60px;--bh:64px;--r:10px;--rlg:14px;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+#ls{min-height:100svh;display:flex;align-items:center;justify-content:center;background:var(--navy);padding:20px;position:relative;overflow:hidden}
+#ls::before{content:'';position:absolute;top:-30%;right:-15%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(74,144,217,.12) 0%,transparent 70%);pointer-events:none}
+#ls::after{content:'';position:absolute;bottom:-20%;left:-10%;width:50%;height:70%;background:radial-gradient(ellipse,rgba(37,88,168,.18) 0%,transparent 70%);pointer-events:none}
+.lcard{background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.3);position:relative;z-index:1}
+.lbrand{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.lmark{width:48px;height:48px;background:var(--navy);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lbrand-t h1{font-size:15px;font-weight:800;color:var(--navy);line-height:1.2}
+.lbrand-t p{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.03em}
+.ltitle{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
+.lsub{font-size:13px;color:var(--text2);margin-bottom:22px}
+.lfield{margin-bottom:13px}
+.lfield label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.lfield input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+.lfield input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,88,168,.12)}
+.lbtn{width:100%;padding:12px;background:var(--navy);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s;margin-top:16px}
+.lbtn:hover{background:#152d57}
+.lerr{background:var(--redpale);color:var(--red);font-size:12px;font-weight:600;padding:8px 12px;border-radius:6px;margin-top:10px;display:none}
+.demu{margin-top:20px;border-top:1px solid var(--border);padding-top:16px}
+.demulbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.demu-u{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer;transition:background .12s;margin-bottom:2px}
+.demu-u:hover{background:var(--bg)}
+.demu-av{width:30px;height:30px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--blue);flex-shrink:0}
+.demu-n{font-size:12px;font-weight:600;color:var(--text)}
+.demu-r{font-size:11px;color:var(--text3)}
+.demu-p{font-size:11px;color:var(--blue);font-weight:700;font-family:'Courier New',monospace}
+#app{display:none;min-height:100svh}
+#sb{position:fixed;left:0;top:0;bottom:0;width:var(--sw);background:var(--navy);display:flex;flex-direction:column;z-index:200;overflow-y:auto}
+.sb-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-logo{width:34px;height:34px;background:rgba(255,255,255,.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-bname{font-size:12px;font-weight:700;color:#fff;line-height:1.25}
+.sb-bsub{font-size:10px;color:rgba(255,255,255,.45)}
+.sb-user{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-un{font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ur{font-size:10px;color:rgba(255,255,255,.5)}
+.sb-nav{flex:1;padding:12px 10px}
+.sni{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;margin-bottom:2px;transition:all .15s}
+.sni i{font-size:18px;flex-shrink:0}
+.sni:hover{background:rgba(255,255,255,.08);color:#fff}
+.sni.active{background:rgba(255,255,255,.15);color:#fff}
+.sb-ft{padding:12px 10px;border-top:1px solid rgba(255,255,255,.08)}
+#main{margin-left:var(--sw);min-height:100svh;display:flex;flex-direction:column}
+#topbar{position:sticky;top:0;z-index:100;height:var(--hh);background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+#mob-btn{display:none;background:none;border:none;cursor:pointer;color:var(--text2);font-size:22px;padding:4px;margin-right:8px}
+#ptitle{font-size:16px;font-weight:700;color:var(--text)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-av{width:34px;height:34px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer}
+.page{display:none;padding:28px;flex:1}
+.page.active{display:block}
+.ph{font-size:24px;font-weight:800;color:var(--text);margin-bottom:4px}
+.ps{font-size:14px;color:var(--text2);margin-bottom:24px}
+.card{background:#fff;border-radius:var(--rlg);border:1px solid var(--border);padding:20px 24px;box-shadow:var(--sh)}
+.ctitle{font-size:14px;font-weight:700;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ctitle i{font-size:18px;color:var(--blue)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.sc{background:#fff;border-radius:var(--rlg);border:1px solid var(--border);padding:16px 20px;box-shadow:var(--sh)}
+.sc-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.sc-icon i{font-size:20px}
+.ic-b{background:var(--sky);color:var(--blue)}.ic-g{background:var(--greenpale);color:var(--green)}
+.ic-a{background:var(--amberpale);color:var(--amber)}.ic-p{background:var(--purplepale);color:var(--purple)}
+.sc-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.sc-val{font-size:28px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px}
+.sc-sub{font-size:12px;color:var(--text3)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bb{background:var(--sky);color:var(--blue)}.bg2{background:var(--greenpale);color:var(--green)}
+.ba{background:var(--amberpale);color:var(--amber)}.br{background:var(--redpale);color:var(--red)}
+.bp{background:var(--purplepale);color:var(--purple)}.bgr{background:#F1F5F9;color:#475569}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn i{font-size:16px}
+.btn-navy{background:var(--navy);color:#fff}.btn-navy:hover{background:#152d57}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#1e4890}
+.btn-ol{background:#fff;color:var(--text2);border:1.5px solid var(--border)}.btn-ol:hover{border-color:var(--blue);color:var(--blue)}
+.btn-gh{background:transparent;color:var(--text2)}.btn-gh:hover{background:var(--bg)}
+.btn-sm{padding:6px 12px;font-size:12px}.btn-lg{padding:12px 24px;font-size:14px}
+.btn-red{background:var(--redpale);color:var(--red);border:1px solid #fca5a5}.btn-red:hover{background:#fca5a5}
+.fr{display:grid;gap:14px;margin-bottom:14px}
+.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:1fr 1fr 1fr}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.fg select,.fg input[type=date],.fg input[type=text],.fg textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);background:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.fg select:focus,.fg input:focus,.fg textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,88,168,.1)}
+.fg textarea{min-height:70px;resize:vertical}
+.twrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;background:#fff;min-width:600px}
+thead th{padding:10px 14px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;background:var(--bg);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:11px 14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--border)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#FAFBFD}
+#bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);height:var(--bh);z-index:200;box-shadow:0 -4px 12px rgba(0,0,0,.06)}
+.bni{display:flex;height:100%}
+.bni-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--text3);font-size:9px;font-weight:700;transition:color .15s;text-transform:uppercase;letter-spacing:.04em}
+.bni-item i{font-size:20px}
+.bni-item.active{color:var(--blue)}
+#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150}
+#ov.show{display:block}
+#toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;transform:translateY(120px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:1000;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+#toast.show{transform:translateY(0);opacity:1}
+#toast i{font-size:18px;color:#86efac}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+#modal.open{display:flex}
+.mbox{background:#fff;border-radius:16px;width:100%;max-width:540px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.25)}
+.mhead{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.mtitle{font-size:15px;font-weight:800;color:var(--text)}
+.mbody{padding:20px 24px}
+.mfoot{padding:14px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:#fff}
+.phero{background:linear-gradient(135deg,var(--navy) 0%,#2558A8 100%);border-radius:var(--rlg);padding:28px;display:flex;align-items:center;gap:20px;color:#fff;margin-bottom:20px;position:relative;overflow:hidden}
+.phero::after{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.04)}
+.pav{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;flex-shrink:0;border:3px solid rgba(255,255,255,.2)}
+.pname{font-size:20px;font-weight:800;margin-bottom:4px}
+.pemail{font-size:13px;opacity:.75;margin-bottom:10px}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ii{background:var(--bg);border-radius:8px;padding:12px 14px}
+.ii-lbl{font-size:11px;color:var(--text3);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.ii-val{font-size:13px;font-weight:600;color:var(--text)}
+.wsteps{display:flex;align-items:center;background:#fff;border-radius:var(--rlg);border:1px solid var(--border);padding:16px 20px;margin-bottom:16px;box-shadow:var(--sh)}
+.ws{display:flex;align-items:center;gap:8px;flex:1}
+.ws-n{width:28px;height:28px;border-radius:50%;background:#E2E8F0;color:var(--text3);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:all .2s}
+.ws-l{font-size:12px;font-weight:600;color:var(--text3);transition:color .2s;white-space:nowrap}
+.ws.active .ws-n{background:var(--blue);color:#fff}.ws.active .ws-l{color:var(--blue)}
+.ws.done .ws-n{background:var(--green);color:#fff}.ws.done .ws-l{color:var(--green)}
+.wl{flex:1;height:2px;background:var(--border);min-width:10px;transition:background .2s}
+.wl.done{background:var(--green)}
+.wstep{display:none;margin-bottom:16px}
+.wstep.active{display:block}
+.scard{border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:8px;background:#fff;transition:border-color .2s,box-shadow .2s}
+.scard.has-occ{border-color:var(--blue);box-shadow:0 0 0 2px rgba(37,88,168,.1)}
+.scard-h{display:flex;align-items:center;gap:12px;padding:13px 16px;cursor:pointer;transition:background .12s;user-select:none}
+.scard-h:hover{background:var(--bg)}
+.scard.expanded>.scard-h{background:var(--sky)}
+.scard-name{font-size:13px;font-weight:700;color:var(--text)}
+.scard-cnt{font-size:11px;color:var(--text3);margin-top:2px;transition:color .2s}
+.scard.has-occ .scard-cnt{color:var(--blue);font-weight:600}
+.scard-ico{font-size:18px;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.scard.expanded .scard-ico{transform:rotate(90deg);color:var(--blue)}
+.scard-body{padding:16px;border-top:1px solid var(--border);background:#FAFCFF}
+.ocat{margin-bottom:16px}
+.ocat:last-child{margin-bottom:0}
+.ocath{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.odot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.oitems{display:flex;flex-direction:column;gap:2px}
+.oitem{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;transition:background .1s}
+.oitem:hover{background:#EEF4FB}.oitem.sel{background:var(--sky)}
+.oitem input[type=checkbox]{accent-color:var(--blue);width:14px;height:14px;flex-shrink:0;margin-top:2px;cursor:pointer}
+.oitem label{font-size:12px;color:var(--text);line-height:1.4;cursor:pointer}
+.rbox{background:var(--bg);border-radius:10px;padding:16px 18px;margin-bottom:16px;max-height:400px;overflow-y:auto}
+.rrow{display:flex;gap:10px;margin-bottom:8px;font-size:13px;align-items:flex-start}
+.rlbl{font-weight:700;color:var(--text2);min-width:90px;flex-shrink:0;font-size:12px}
+.rval{color:var(--text);flex:1}
+.fbar{background:#fff;border:1px solid var(--border);border-radius:var(--rlg);padding:16px 20px;margin-bottom:20px;box-shadow:var(--sh)}
+.ftit{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;align-items:end}
+.ff{display:flex;flex-direction:column;gap:4px}
+.ff label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.ff select,.ff input{padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:inherit;color:var(--text);background:#fff;outline:none;transition:border-color .2s}
+.ff select:focus,.ff input:focus{border-color:var(--blue)}
+.cgrid{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:16px}
+.cgrid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.ri{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.ri:last-child{border-bottom:none}
+.ri-n{font-size:11px;font-weight:700;color:var(--text3);width:18px;text-align:center}
+.ri-info{flex:1;min-width:0}
+.ri-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ri-bg{height:3px;background:var(--border);border-radius:2px;margin-top:4px}
+.ri-fill{height:3px;border-radius:2px;background:var(--blue)}
+.ri-cnt{font-size:13px;font-weight:800;color:var(--blue);min-width:24px;text-align:right}
+.plist-item{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.plist-item:last-child{border-bottom:none}
+.plist-av{width:38px;height:38px;border-radius:50%;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--blue);flex-shrink:0}
+.pmatrix{width:100%;border-collapse:collapse;min-width:500px}
+.pmatrix th,.pmatrix td{padding:10px 12px;border:1px solid var(--border);text-align:center;font-size:12px;vertical-align:middle}
+.pmatrix th{background:var(--bg);font-weight:700;color:var(--text2)}
+.pmatrix td:first-child,.pmatrix th:first-child{text-align:left;min-width:200px}
+.tog{position:relative;display:inline-block;width:36px;height:20px;flex-shrink:0;vertical-align:middle}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-sl{position:absolute;inset:0;background:#CBD5E1;border-radius:20px;cursor:pointer;transition:.2s}
+.tog-sl:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.tog input:checked+.tog-sl{background:var(--blue)}
+.tog input:checked+.tog-sl:before{transform:translateX(16px)}
+.tog input:disabled+.tog-sl{opacity:.5;cursor:not-allowed}
+.empty-state{text-align:center;padding:40px 24px;color:var(--text3)}
+.empty-state i{font-size:40px;display:block;margin-bottom:12px;opacity:.3}
+.empty-state p{font-size:13px}
+hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+.hidden{display:none!important}
+.flex{display:flex}.ic{align-items:center}.jb{justify-content:space-between}
+.g2{gap:8px}.g3{gap:12px}.f1{flex:1}
+.mb3{margin-bottom:12px}.mb4{margin-bottom:16px}.mb5{margin-bottom:20px}.mb6{margin-bottom:24px}.mt4{margin-top:16px}
+.tsm{font-size:12px}.tmut{color:var(--text3)}.fw7{font-weight:700}
+@media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}.cgrid{grid-template-columns:1fr}}
+@media(max-width:768px){
+  #sb{transform:translateX(-100%);transition:transform .25s}
+  #sb.open{transform:translateX(0)}
+  #main{margin-left:0;padding-bottom:var(--bh)}
+  #bnav{display:block}
+  #mob-btn{display:flex}
+  .page{padding:16px}
+  #topbar{padding:0 16px}
+  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .cgrid,.cgrid2{grid-template-columns:1fr}
+  .fr.c2,.fr.c3{grid-template-columns:1fr}
+  .ig{grid-template-columns:1fr}
+  .phero{flex-direction:column;text-align:center;padding:24px 20px}
+  .fgrid{grid-template-columns:1fr 1fr}
+  #toast{bottom:80px;right:16px;left:16px}
+  .wsteps{padding:12px}
+  .ws-l{display:none}
+  .mbox{max-height:95vh}
+}
+@media(max-width:480px){.stats{grid-template-columns:1fr 1fr}.fgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="ls">
+<div class="lcard">
+  <div class="lbrand">
+    <div class="lmark">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 3L25 8.5V19.5L14 25L3 19.5V8.5L14 3Z" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>
+        <path d="M14 7.5L20.5 11V17L14 20.5L7.5 17V11L14 7.5Z" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.4)" stroke-width="1"/>
+        <circle cx="14" cy="14" r="3" fill="white"/>
+      </svg>
+    </div>
+    <div class="lbrand-t">
+      <h1>Santa Maria Minas</h1>
+      <p>Sistema de Ocorrências</p>
+    </div>
+  </div>
+  <div class="ltitle">Bem-vindo</div>
+  <div class="lsub">Acesse com suas credenciais institucionais.</div>
+  <div class="lfield"><label>E-mail</label><input type="email" id="le" placeholder="usuario@smm.edu.br"></div>
+  <div class="lfield"><label>Senha</label><input type="password" id="lp" placeholder="••••••••"></div>
+  <div class="lerr" id="lerr">Usuário ou senha inválidos.</div>
+  <button class="lbtn" onclick="doLogin()">Entrar no sistema</button>
+  <div class="demu">
+    <div class="demulbl">Usuários de demonstração — clique para preencher</div>
+    <div class="demu-u" onclick="fl('raphael.maia@smm.edu.br','prof123')"><div class="demu-av">RM</div><div class="f1"><div class="demu-n">Raphael A. C. Souza Maia</div><div class="demu-r">Professor · Betim</div></div><div class="demu-p">prof123</div></div>
+    <div class="demu-u" onclick="fl('luzia.costa@smm.edu.br','prof456')"><div class="demu-av">LC</div><div class="f1"><div class="demu-n">Luzia Ferreira Costa</div><div class="demu-r">Professor · Betim</div></div><div class="demu-p">prof456</div></div>
+    <div class="demu-u" onclick="fl('ana.rodrigues@smm.edu.br','coord123')"><div class="demu-av">AR</div><div class="f1"><div class="demu-n">Ana Beatriz Rodrigues</div><div class="demu-r">Coordenadora · Betim</div></div><div class="demu-p">coord123</div></div>
+    <div class="demu-u" onclick="fl('carlos.lima@smm.edu.br','dir123')"><div class="demu-av">CL</div><div class="f1"><div class="demu-n">Carlos Eduardo Lima</div><div class="demu-r">Diretor · Betim</div></div><div class="demu-p">dir123</div></div>
+    <div class="demu-u" onclick="fl('mariana.santos@smm.edu.br','dg2026')"><div class="demu-av">MS</div><div class="f1"><div class="demu-n">Mariana Oliveira Santos</div><div class="demu-r">Diretora Geral · Rede SMM</div></div><div class="demu-p">dg2026</div></div>
+  </div>
+</div>
+</div>
+
+<div id="app">
+  <div id="ov" onclick="closeSb()"></div>
+  
+<div id="modal">
+  <div class="mbox">
+    <div class="mhead">
+      <div class="mtitle" id="mtitle">Modal</div>
+      <button class="btn btn-gh btn-sm" onclick="closeModal()" style="padding:4px 8px"><i class="ti ti-x" style="font-size:18px"></i></button>
+    </div>
+    <div class="mbody" id="mbody"></div>
+    <div class="mfoot" id="mfoot"></div>
+  </div>
+</div>
+
+  
+<aside id="sb">
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 2L17 6V14L10 18L3 14V6L10 2Z" fill="rgba(255,255,255,.1)" stroke="rgba(255,255,255,.5)" stroke-width="1.2"/>
+        <circle cx="10" cy="10" r="2.5" fill="rgba(255,255,255,.75)"/>
+      </svg>
+    </div>
+    <div><div class="sb-bname">Santa Maria Minas</div><div class="sb-bsub">Ocorrências</div></div>
+  </div>
+  <div class="sb-user" id="sbu"></div>
+  <nav class="sb-nav" id="sbnav"></nav>
+  <div class="sb-ft"><div class="sni" onclick="doLogout()"><i class="ti ti-logout"></i><span>Sair</span></div></div>
+</aside>
+
+  <div id="main">
+    <header id="topbar">
+      <div class="flex ic g2">
+        <button id="mob-btn" onclick="openSb()"><i class="ti ti-menu-2"></i></button>
+        <div id="ptitle">—</div>
+      </div>
+      <div class="tb-right"><div class="tb-av" id="tbav" onclick="nav('perfil')">—</div></div>
+    </header>
+    
+<div class="page" id="page-perfil"></div>
+
+<div class="page" id="page-registro">
+  <div class="ph">Registrar Ocorrência</div>
+  <div class="ps">Selecione a turma, os alunos e as ocorrências correspondentes.</div>
+  <div class="wsteps">
+    <div class="ws active" id="ws1"><div class="ws-n">1</div><span class="ws-l">Aula</span></div>
+    <div class="wl" id="wl1"></div>
+    <div class="ws" id="ws2"><div class="ws-n">2</div><span class="ws-l">Alunos</span></div>
+    <div class="wl" id="wl2"></div>
+    <div class="ws" id="ws3"><div class="ws-n">3</div><span class="ws-l">Confirmar</span></div>
+  </div>
+
+  <div class="wstep active card" id="rs1">
+    <div class="ctitle"><i class="ti ti-calendar-event"></i> Dados da Aula</div>
+    <div class="fr c3">
+      <div class="fg"><label>Data *</label><input type="date" id="rdate"></div>
+      <div class="fg"><label>Turma *</label><select id="rcls" onchange="onCls()"><option value="">Selecione...</option></select></div>
+      <div class="fg"><label>Disciplina</label><input type="text" id="rdisc" readonly style="background:var(--bg)"></div>
+    </div>
+    <div class="flex jb ic mt4"><span></span><button class="btn btn-blue" onclick="goStep(2)"><i class="ti ti-arrow-right"></i> Próximo</button></div>
+  </div>
+
+  <div class="wstep card" id="rs2">
+    <div class="ctitle"><i class="ti ti-users"></i> Alunos e Ocorrências</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:14px">Clique no nome do aluno para expandir e selecionar as ocorrências. Cada aluno pode ter múltiplas ocorrências.</p>
+    <div id="sgrid2"></div>
+    <div class="flex jb ic mt4">
+      <button class="btn btn-gh" onclick="goStep(1)"><i class="ti ti-arrow-left"></i> Voltar</button>
+      <button class="btn btn-blue" onclick="goStep(3)"><i class="ti ti-arrow-right"></i> Revisar</button>
+    </div>
+  </div>
+
+  <div class="wstep card" id="rs3">
+    <div class="ctitle"><i class="ti ti-check-circle"></i> Revisão e Confirmação</div>
+    <div class="rbox" id="rbox"></div>
+    <div class="flex jb ic">
+      <button class="btn btn-gh" onclick="goStep(2)"><i class="ti ti-arrow-left"></i> Voltar</button>
+      <div class="flex g2">
+        <button class="btn btn-ol" onclick="resetWiz()"><i class="ti ti-refresh"></i> Limpar</button>
+        <button class="btn btn-navy btn-lg" onclick="submitOcc()"><i class="ti ti-device-floppy"></i> Registrar Ocorrência</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-dashboard">
+  <div class="ph">Dashboard de Ocorrências</div>
+  <div class="ps" id="dsub">Visão analítica das ocorrências registradas.</div>
+  <div class="fbar">
+    <div class="ftit">
+      <span><i class="ti ti-filter" style="font-size:12px;margin-right:5px"></i>Filtros</span>
+      <button class="btn btn-gh btn-sm" onclick="clrF()"><i class="ti ti-x"></i> Limpar</button>
+    </div>
+    <div class="fgrid">
+      <div class="ff"><label>De</label><input type="date" id="ff0" onchange="applyF()"></div>
+      <div class="ff"><label>Até</label><input type="date" id="ft0" onchange="applyF()"></div>
+      <div class="ff hidden" id="fuw"><label>Unidade</label><select id="fu" onchange="applyF()"><option value="">Todas</option></select></div>
+      <div class="ff"><label>Turma</label><select id="fc" onchange="applyF()"><option value="">Todas</option></select></div>
+      <div class="ff"><label>Série/Ano</label><select id="fser" onchange="applyF()"><option value="">Todas</option><option>1º Ano</option><option>2º Ano</option><option>3º Ano</option></select></div>
+      <div class="ff"><label>Professor</label><select id="fp" onchange="applyF()"><option value="">Todos</option></select></div>
+      <div class="ff"><label>Disciplina</label><select id="fd" onchange="applyF()"><option value="">Todas</option></select></div>
+      <div class="ff"><label>Aluno</label><input type="text" id="fst" placeholder="Buscar..." oninput="applyF()"></div>
+    </div>
+  </div>
+  <div class="stats" id="dstats"></div>
+  <div class="cgrid">
+    <div class="card" style="margin:0"><div class="ctitle"><i class="ti ti-chart-bar"></i> Ocorrências por Mês</div><canvas id="ctl"></canvas></div>
+    <div class="card" style="margin:0"><div class="ctitle"><i class="ti ti-chart-donut-3"></i> Por Categoria</div><canvas id="ccat"></canvas></div>
+  </div>
+  <div style="margin-bottom:16px"></div>
+  <div class="cgrid2">
+    <div class="card" style="margin:0"><div class="ctitle"><i class="ti ti-chart-bar"></i> Por Turma</div><canvas id="ccls"></canvas></div>
+    <div class="card" style="margin:0"><div class="ctitle"><i class="ti ti-podium"></i> Tipos mais Frequentes</div><div id="rank"></div></div>
+  </div>
+  <div style="margin-bottom:16px"></div>
+  <div class="card">
+    <div class="flex jb ic mb4">
+      <div class="ctitle" style="margin:0"><i class="ti ti-list-details"></i> Histórico de Ocorrências</div>
+      <span class="tsm tmut" id="tcnt"></span>
+    </div>
+    <div class="twrap">
+      <table><thead><tr><th>Data</th><th>Aluno</th><th>Turma</th><th>Tipo(s)</th><th>Professor</th><th>Disciplina</th><th>Unidade</th></tr></thead>
+      <tbody id="tbody"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-professores"></div>
+<div class="page" id="page-alunos"></div>
+<div class="page" id="page-permissoes"></div>
+
+  </div>
+  <nav id="bnav"><div class="bni" id="bni"></div></nav>
+</div>
+<div id="toast"><i class="ti ti-check"></i> <span id="tmsg">OK</span></div>
+<script>
+
+const USERS = [
+  {id:'u1',name:'Raphael A. C. Souza Maia',email:'raphael.maia@smm.edu.br',password:'prof123',role:'professor',av:'RM',unit:'Betim',classes:['\u00b1','1\u00ba Ano PA','1\u00ba Ano PB'],disciplines:{'1\u00ba Ano PA':'Atividade Extracurricular','1\u00ba Ano PB':'Educa\u00e7\u00e3o F\u00edsica'}},
+  {id:'u2',name:'Luzia Ferreira Costa',email:'luzia.costa@smm.edu.br',password:'prof456',role:'professor',av:'LC',unit:'Betim',classes:['2\u00ba Ano PA','3\u00ba Ano PA'],disciplines:{'2\u00ba Ano PA':'Matem\u00e1tica','3\u00ba Ano PA':'Matem\u00e1tica'}},
+  {id:'u3',name:'Ana Beatriz Rodrigues',email:'ana.rodrigues@smm.edu.br',password:'coord123',role:'coordenador',av:'AR',unit:'Betim'},
+  {id:'u4',name:'Carlos Eduardo Lima',email:'carlos.lima@smm.edu.br',password:'dir123',role:'diretor',av:'CL',unit:'Betim'},
+  {id:'u5',name:'Mariana Oliveira Santos',email:'mariana.santos@smm.edu.br',password:'dg2026',role:'diretor_geral',av:'MS',units:['Betim','BH Centro','Contagem','Nova Lima','Vespasiano','Sete Lagoas']}
+];
+
+
+const RL={professor:'Professor',coordenador:'Coordenador',diretor:'Diretor',diretor_geral:'Diretor Geral'};
+
+const OTYPES=[
+  {cat:'Comportamento',color:'#E74C3C',items:['Agressão física','Agressão verbal','Desacato à autoridade escolar','Desrespeito verbal a professores, colaboradores ou colegas','Intimidação sistemática','Comportamento inadequado em redes sociais, no espaço escolar ou portando símbolos da instituição']},
+  {cat:'Disciplina em Sala',color:'#E67E22',items:['Atrapalhar deliberadamente a aula','Conversas excessivas em sala','Dormir em aula','Entrar em sala sem autorização','Ser convidado a se retirar da sala por conversas excessivas ou atitudes inadequadas','Prejuízo intencional à organização da aula, por meio de atitudes que comprometam o andamento das atividades pedagógicas e a aprendizagem dos demais estudantes','Uso Indevido de Celular']},
+  {cat:'Atividades e Materiais',color:'#D97706',items:['Atraso (Na primeira aula, troca de professor ou após o recreio)','Cola em avaliação','Dever incompleto','Esquecer material didático','Não entrega de tarefa','Uniforme Incompleto']},
+  {cat:'Patrimônio',color:'#7C3AED',items:['Dano ao patrimônio']}
+];
+
+const TURMAS_LIST=['1º Ano PA','1º Ano PB','2º Ano PA','2º Ano PB','3º Ano PA','3º Ano PB'];
+const DISC_LIST=['Matemática','Português','Ciências','História','Geografia','Artes','Educação Física','Atividade Extracurricular','Biologia','Química','Física','Literatura','Inglês','Filosofia','Sociologia'];
+const UNITS_LIST=['Betim','BH Centro','Contagem','Nova Lima','Vespasiano','Sete Lagoas'];
+
+let PERMS_MTX={
+  professor:     [true, false,false,false,false,false,false],
+  coordenador:   [false,true, false,true, true, false,false],
+  diretor:       [false,true, false,true, true, false,false],
+  diretor_geral: [false,true, true, true, true, true, true]
+};
+const PERMS_FEAT=['Registrar Ocorrências','Dashboard da Unidade','Dashboard da Rede Completa','Gerenciar Professores','Gerenciar Alunos','Editar Permissões do Sistema','Acesso a Todas as Unidades'];
+
+const STUDENTS={
+  'Betim':{
+    '1º Ano PA':[{id:'s1',name:'Arthur Penido Silveira'},{id:'s2',name:'Clara Rossellini Tinelli Freitas'},{id:'s3',name:'Diana Silva Barbosa'},{id:'s4',name:'Emanuel Apolinário Pereira Silva'},{id:'s5',name:'Francisco Vasconcelos Alves Damiani'},{id:'s6',name:'Helena Ferreira Santos'},{id:'s7',name:'Joaquim Henrique Silva Mota'},{id:'s8',name:'Julia Costa Diniz'},{id:'s9',name:'Maitê Bicalho Guimarães'},{id:'s10',name:'Maria Beatriz Matos de Oliveira Reis'},{id:'s11',name:'Melissa Alves do Prado Silva'},{id:'s12',name:'Sara Valentina Alves Damião'}],
+    '1º Ano PB':[{id:'s13',name:'André Luís Cardoso Ferreira'},{id:'s14',name:'Beatriz Cunha Monteiro'},{id:'s15',name:'Carlos Henrique Souza Lima'},{id:'s16',name:'Daniela Reis Albuquerque'},{id:'s17',name:'Eduardo Pinto Silveira'},{id:'s18',name:'Fernanda Costa Azevedo'},{id:'s19',name:'Gabriel Mendes Teixeira'},{id:'s20',name:'Isabella Rodrigues Castro'},{id:'s21',name:'João Pedro Alvarenga Santos'},{id:'s22',name:'Larissa Oliveira Machado'},{id:'s23',name:'Marcelo Braga Fonseca'},{id:'s24',name:'Natália Vasconcelos Pires'}],
+    '2º Ano PA':[{id:'s25',name:'Alexandre Borges Figueiredo'},{id:'s26',name:'Camila Neves Pereira'},{id:'s27',name:'Diego Santana Carvalho'},{id:'s28',name:'Eduarda Lima Meireles'},{id:'s29',name:'Felipe Araújo Guimarães'},{id:'s30',name:'Giovanna Teles Assunção'},{id:'s31',name:'Henrique Moreira Lacerda'},{id:'s32',name:'Isabela Pinheiro Souza'},{id:'s33',name:'Jonas Almeida Barbosa'},{id:'s34',name:'Karen Ribeiro Duarte'}],
+    '3º Ano PA':[{id:'s35',name:'Ana Carolina Moreira Silva'},{id:'s36',name:'Bruno Alves Gomes'},{id:'s37',name:'Cecília Martins Rocha'},{id:'s38',name:'Danilo Ferreira Brito'},{id:'s39',name:'Elisa Campos Mendonça'},{id:'s40',name:'Fábio Lopes Cardoso'},{id:'s41',name:'Gabriela Sousa Ramos'},{id:'s42',name:'Hiago Batista Nunes'},{id:'s43',name:'Iara Cristina Valente'},{id:'s44',name:'Jorge Paulo Monteiro'}]
+  },
+  'BH Centro':{'1º Ano PA':[{id:'s45',name:'Alanis Ferreira Braga'},{id:'s46',name:'Bernardo Lima Couto'},{id:'s47',name:'Cláudia Neves Drummond'},{id:'s48',name:'Denis Carvalho Melo'},{id:'s49',name:'Érika Santos Borges'},{id:'s50',name:'Fernando Oliveira Rezende'}]},
+  'Contagem':{'1º Ano PA':[{id:'s51',name:'Gustavo Prado Alves'},{id:'s52',name:'Heloísa Martins Faria'},{id:'s53',name:'Igor Ribeiro Campos'},{id:'s54',name:'Juliana Costa Fontes'},{id:'s55',name:'Kaique Andrade Peixoto'}]},
+  'Nova Lima':{'1º Ano PA':[{id:'s56',name:'Letícia Borba Magalhães'},{id:'s57',name:'Maurício Sena Cruz'},{id:'s58',name:'Nathalia Drummond Faria'},{id:'s59',name:'Otávio Lemos Braga'}]},
+  'Vespasiano':{'1º Ano PA':[{id:'s60',name:'Patrícia Vieira Santos'},{id:'s61',name:'Renato Coelho Nunes'},{id:'s62',name:'Sabrina Assis Rocha'}]}
+};
+
+let OCC=[
+  {id:'o1',sid:'s6',sname:'Helena Ferreira Santos',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Conversas excessivas em sala','Atrapalhar deliberadamente a aula'],date:'2026-05-20',obs:'Aluna perturbou a aula repetidamente.'},
+  {id:'o2',sid:'s6',sname:'Helena Ferreira Santos',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Uso Indevido de Celular'],date:'2026-05-14',obs:''},
+  {id:'o3',sid:'s6',sname:'Helena Ferreira Santos',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Dever incompleto','Não entrega de tarefa'],date:'2026-05-08',obs:'Terceira vez consecutiva sem entregar tarefa.'},
+  {id:'o4',sid:'s6',sname:'Helena Ferreira Santos',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Intimidação sistemática'],date:'2026-04-22',obs:'Comportamento relatado por colegas da turma.'},
+  {id:'o5',sid:'s2',sname:'Clara Rossellini Tinelli Freitas',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Conversas excessivas em sala'],date:'2026-05-20',obs:''},
+  {id:'o6',sid:'s2',sname:'Clara Rossellini Tinelli Freitas',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Atraso (Na primeira aula, troca de professor ou após o recreio)'],date:'2026-05-12',obs:''},
+  {id:'o7',sid:'s4',sname:'Emanuel Apolinário Pereira Silva',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Agressão verbal','Desrespeito verbal a professores, colaboradores ou colegas'],date:'2026-05-15',obs:'Desrespeitou colega durante atividade em grupo.'},
+  {id:'o8',sid:'s4',sname:'Emanuel Apolinário Pereira Silva',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Dano ao patrimônio'],date:'2026-04-10',obs:'Riscou carteira do laboratório.'},
+  {id:'o9',sid:'s9',sname:'Maitê Bicalho Guimarães',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Esquecer material didático'],date:'2026-05-20',obs:''},
+  {id:'o10',sid:'s9',sname:'Maitê Bicalho Guimarães',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Uniforme Incompleto'],date:'2026-05-06',obs:''},
+  {id:'o11',sid:'s12',sname:'Sara Valentina Alves Damião',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Conversas excessivas em sala'],date:'2026-05-20',obs:''},
+  {id:'o12',sid:'s7',sname:'Joaquim Henrique Silva Mota',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Uso Indevido de Celular','Entrar em sala sem autorização'],date:'2026-05-10',obs:'Chegou atrasado com celular em mãos.'},
+  {id:'o13',sid:'s5',sname:'Francisco Vasconcelos Alves Damiani',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Cola em avaliação'],date:'2026-04-28',obs:'Flagrado com cola durante prova bimestral.'},
+  {id:'o14',sid:'s11',sname:'Melissa Alves do Prado Silva',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Atraso (Na primeira aula, troca de professor ou após o recreio)'],date:'2026-04-22',obs:''},
+  {id:'o15',sid:'s3',sname:'Diana Silva Barbosa',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Conversas excessivas em sala','Dever incompleto'],date:'2026-04-15',obs:''},
+  {id:'o16',sid:'s1',sname:'Arthur Penido Silveira',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Dever incompleto'],date:'2026-03-20',obs:''},
+  {id:'o17',sid:'s10',sname:'Maria Beatriz Matos de Oliveira Reis',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Esquecer material didático'],date:'2026-03-12',obs:''},
+  {id:'o18',sid:'s8',sname:'Julia Costa Diniz',cls:'1º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Não entrega de tarefa'],date:'2026-02-25',obs:''},
+  {id:'o19',sid:'s13',sname:'André Luís Cardoso Ferreira',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Agressão física'],date:'2026-05-19',obs:'Empurrou colega. Encaminhado à coordenação.'},
+  {id:'o20',sid:'s15',sname:'Carlos Henrique Souza Lima',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Conversas excessivas em sala','Uso Indevido de Celular'],date:'2026-05-16',obs:''},
+  {id:'o21',sid:'s19',sname:'Gabriel Mendes Teixeira',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Não entrega de tarefa'],date:'2026-05-09',obs:''},
+  {id:'o22',sid:'s13',sname:'André Luís Cardoso Ferreira',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Ser convidado a se retirar da sala por conversas excessivas ou atitudes inadequadas','Atrapalhar deliberadamente a aula'],date:'2026-04-14',obs:'Recusou-se a parar de interromper a aula.'},
+  {id:'o23',sid:'s17',sname:'Eduardo Pinto Silveira',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Desrespeito verbal a professores, colaboradores ou colegas'],date:'2026-04-28',obs:''},
+  {id:'o24',sid:'s22',sname:'Larissa Oliveira Machado',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Atraso (Na primeira aula, troca de professor ou após o recreio)'],date:'2026-04-05',obs:''},
+  {id:'o25',sid:'s23',sname:'Marcelo Braga Fonseca',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Dever incompleto'],date:'2026-03-30',obs:''},
+  {id:'o26',sid:'s14',sname:'Beatriz Cunha Monteiro',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Conversas excessivas em sala'],date:'2026-03-23',obs:''},
+  {id:'o27',sid:'s27',sname:'Diego Santana Carvalho',cls:'2º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Cola em avaliação','Desacato à autoridade escolar'],date:'2026-05-18',obs:'Desrespeitoso ao ser repreendido.'},
+  {id:'o28',sid:'s29',sname:'Felipe Araújo Guimarães',cls:'2º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Uso Indevido de Celular'],date:'2026-05-13',obs:''},
+  {id:'o29',sid:'s25',sname:'Alexandre Borges Figueiredo',cls:'2º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Não entrega de tarefa','Dever incompleto'],date:'2026-05-07',obs:''},
+  {id:'o30',sid:'s33',sname:'Jonas Almeida Barbosa',cls:'2º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Comportamento inadequado em redes sociais, no espaço escolar ou portando símbolos da instituição'],date:'2026-04-21',obs:'Post inadequado identificado pela coordenação.'},
+  {id:'o31',sid:'s26',sname:'Camila Neves Pereira',cls:'2º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Conversas excessivas em sala'],date:'2026-04-14',obs:''},
+  {id:'o32',sid:'s36',sname:'Bruno Alves Gomes',cls:'3º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Agressão verbal'],date:'2026-05-17',obs:'Agrediu colega verbalmente durante apresentação.'},
+  {id:'o33',sid:'s38',sname:'Danilo Ferreira Brito',cls:'3º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Dever incompleto','Não entrega de tarefa'],date:'2026-05-11',obs:''},
+  {id:'o34',sid:'s40',sname:'Fábio Lopes Cardoso',cls:'3º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Conversas excessivas em sala'],date:'2026-05-04',obs:''},
+  {id:'o35',sid:'s42',sname:'Hiago Batista Nunes',cls:'3º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Uso Indevido de Celular'],date:'2026-04-25',obs:''},
+  {id:'o36',sid:'s35',sname:'Ana Carolina Moreira Silva',cls:'3º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Atraso (Na primeira aula, troca de professor ou após o recreio)'],date:'2026-04-17',obs:''},
+  {id:'o37',sid:'s46',sname:'Bernardo Lima Couto',cls:'1º Ano PA',unit:'BH Centro',prof:'Patricia Almeida Costa',disc:'Português',types:['Conversas excessivas em sala','Uso Indevido de Celular'],date:'2026-05-19',obs:''},
+  {id:'o38',sid:'s48',sname:'Denis Carvalho Melo',cls:'1º Ano PA',unit:'BH Centro',prof:'Patricia Almeida Costa',disc:'Português',types:['Agressão verbal'],date:'2026-05-14',obs:''},
+  {id:'o39',sid:'s45',sname:'Alanis Ferreira Braga',cls:'1º Ano PA',unit:'BH Centro',prof:'Patricia Almeida Costa',disc:'Português',types:['Não entrega de tarefa'],date:'2026-05-08',obs:''},
+  {id:'o40',sid:'s50',sname:'Fernando Oliveira Rezende',cls:'1º Ano PA',unit:'BH Centro',prof:'Roberto Duarte Lins',disc:'Ciências',types:['Dever incompleto'],date:'2026-05-02',obs:''},
+  {id:'o41',sid:'s47',sname:'Cláudia Neves Drummond',cls:'1º Ano PA',unit:'BH Centro',prof:'Patricia Almeida Costa',disc:'Português',types:['Atraso (Na primeira aula, troca de professor ou após o recreio)'],date:'2026-04-23',obs:''},
+  {id:'o42',sid:'s51',sname:'Gustavo Prado Alves',cls:'1º Ano PA',unit:'Contagem',prof:'Sílvia Rezende Braga',disc:'História',types:['Conversas excessivas em sala','Atrapalhar deliberadamente a aula'],date:'2026-05-16',obs:''},
+  {id:'o43',sid:'s55',sname:'Kaique Andrade Peixoto',cls:'1º Ano PA',unit:'Contagem',prof:'Sílvia Rezende Braga',disc:'História',types:['Agressão física'],date:'2026-04-27',obs:'Incidente durante o recreio. Encaminhado à direção.'},
+  {id:'o44',sid:'s56',sname:'Letícia Borba Magalhães',cls:'1º Ano PA',unit:'Nova Lima',prof:'Marcos Tavares Melo',disc:'Artes',types:['Esquecer material didático'],date:'2026-05-15',obs:''},
+  {id:'o45',sid:'s57',sname:'Maurício Sena Cruz',cls:'1º Ano PA',unit:'Nova Lima',prof:'Marcos Tavares Melo',disc:'Artes',types:['Conversas excessivas em sala'],date:'2026-05-08',obs:''},
+  {id:'o46',sid:'s60',sname:'Patrícia Vieira Santos',cls:'1º Ano PA',unit:'Vespasiano',prof:'Fernanda Gomes Pereira',disc:'Geografia',types:['Conversas excessivas em sala'],date:'2026-05-12',obs:''},
+  {id:'o47',sid:'s61',sname:'Renato Coelho Nunes',cls:'1º Ano PA',unit:'Vespasiano',prof:'Fernanda Gomes Pereira',disc:'Geografia',types:['Não entrega de tarefa','Dever incompleto'],date:'2026-05-05',obs:''},
+  {id:'o48',sid:'s6',sname:'Helena Ferreira Santos',cls:'1º Ano PA',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Atividade Extracurricular',types:['Conversas excessivas em sala'],date:'2025-12-10',obs:''},
+  {id:'o49',sid:'s13',sname:'André Luís Cardoso Ferreira',cls:'1º Ano PB',unit:'Betim',prof:'Raphael A. C. Souza Maia',disc:'Educação Física',types:['Agressão física'],date:'2026-01-14',obs:'Incidente durante jogo de quadra.'},
+  {id:'o50',sid:'s27',sname:'Diego Santana Carvalho',cls:'2º Ano PA',unit:'Betim',prof:'Luzia Ferreira Costa',disc:'Matemática',types:['Conversas excessivas em sala'],date:'2026-02-10',obs:''}
+];
+
+let S={user:null,page:'perfil',step:1,charts:{}};
+
+
+// AUTH
+function fl(e,p){document.getElementById('le').value=e;document.getElementById('lp').value=p}
+function doLogin(){
+  const e=document.getElementById('le').value.trim(),p=document.getElementById('lp').value;
+  const u=USERS.find(x=>x.email===e&&x.password===p);
+  if(!u){document.getElementById('lerr').style.display='block';return}
+  document.getElementById('lerr').style.display='none';S.user=u;
+  document.getElementById('ls').style.display='none';document.getElementById('app').style.display='block';
+  initApp();
+}
+function doLogout(){
+  S.user=null;document.getElementById('app').style.display='none';document.getElementById('ls').style.display='flex';
+  document.getElementById('le').value='';document.getElementById('lp').value='';
+  Object.values(S.charts).forEach(c=>{try{c.destroy()}catch(e){}});S.charts={};
+}
+document.getElementById('lp').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+document.getElementById('le').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+// NAV ITEMS
+function navItems(){
+  const r=S.user.role;
+  const items=[{page:'perfil',label:'Meu Perfil',icon:'ti-user-circle'}];
+  if(r==='professor') items.push({page:'registro',label:'Registrar Ocorrência',icon:'ti-clipboard-plus'});
+  if(r!=='professor') items.push({page:'dashboard',label:'Dashboard',icon:'ti-chart-bar'});
+  if(['coordenador','diretor','diretor_geral'].includes(r)){
+    items.push({page:'professores',label:'Professores',icon:'ti-users'});
+    items.push({page:'alunos',label:'Alunos',icon:'ti-school'});
+  }
+  if(r==='diretor_geral') items.push({page:'permissoes',label:'Permissões',icon:'ti-shield-lock'});
+  return items;
+}
+
+// INIT APP
+function initApp(){
+  const u=S.user;
+  document.getElementById('sbu').innerHTML=`<div class="sb-av">${u.av}</div><div style="flex:1;min-width:0"><div class="sb-un">${u.name}</div><div class="sb-ur">${RL[u.role]}</div></div>`;
+  document.getElementById('tbav').textContent=u.av;
+  const sbn=document.getElementById('sbnav'),bni=document.getElementById('bni');
+  sbn.innerHTML='';bni.innerHTML='';
+  navItems().forEach(it=>{
+    const el=document.createElement('div');el.className='sni';el.id='sn-'+it.page;
+    el.innerHTML=`<i class="ti ${it.icon}"></i><span>${it.label}</span>`;
+    el.onclick=()=>{nav(it.page);closeSb()};sbn.appendChild(el);
+    const b=document.createElement('div');b.className='bni-item';b.id='bn-'+it.page;
+    b.innerHTML=`<i class="ti ${it.icon}"></i><span>${it.label.split(' ')[0]}</span>`;
+    b.onclick=()=>nav(it.page);bni.appendChild(b);
+  });
+  if(u.role==='professor') initReg();
+  nav(navItems()[0].page);
+}
+
+// NAV
+function nav(page){
+  if(page==='permissoes'&&S.user.role!=='diretor_geral'){nav('perfil');return}
+  if(page==='dashboard'&&S.user.role==='professor'){nav('perfil');return}
+  S.page=page;
+  document.querySelectorAll('.sni').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.bni-item').forEach(e=>e.classList.remove('active'));
+  const sn=document.getElementById('sn-'+page),bn=document.getElementById('bn-'+page);
+  if(sn)sn.classList.add('active');if(bn)bn.classList.add('active');
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  const pg=document.getElementById('page-'+page);if(pg)pg.classList.add('active');
+  const it=navItems().find(i=>i.page===page);
+  document.getElementById('ptitle').textContent=it?it.label:'';
+  if(page==='perfil')renderPerfil();
+  if(page==='dashboard')renderDash();
+  if(page==='registro'){document.getElementById('rdate').value=today();}
+  if(page==='professores')renderProfessores();
+  if(page==='alunos')renderAlunos();
+  if(page==='permissoes')renderPermissoes();
+  window.scrollTo(0,0);
+}
+
+function openSb(){document.getElementById('sb').classList.add('open');document.getElementById('ov').classList.add('show')}
+function closeSb(){document.getElementById('sb').classList.remove('open');document.getElementById('ov').classList.remove('show')}
+
+// MODAL
+function openModal(title,bodyHtml,footHtml){
+  document.getElementById('mtitle').textContent=title;
+  document.getElementById('mbody').innerHTML=bodyHtml;
+  document.getElementById('mfoot').innerHTML=footHtml;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal()});
+
+// PERFIL
+function renderPerfil(){
+  const u=S.user,r=u.role;
+  const rbc={professor:'bb',coordenador:'bg2',diretor:'ba',diretor_geral:'bp'}[r]||'bgr';
+  let extra='';
+  if(r==='professor'){
+    extra=`<div class="ii"><div class="ii-lbl">Turmas</div><div class="ii-val">${(u.classes||[]).map(c=>`<span class="badge bb" style="margin:2px">${c}</span>`).join('')}</div></div>`+
+    `<div class="ii"><div class="ii-lbl">Disciplinas</div><div class="ii-val">${Object.entries(u.disciplines||{}).map(([c,d])=>`<div style="font-size:12px;margin-bottom:3px"><strong>${c}:</strong> ${d}</div>`).join('')||'—'}</div></div>`;
+  } else if(r==='diretor_geral'){
+    extra=`<div class="ii"><div class="ii-lbl">Unidades</div><div class="ii-val">${(u.units||[]).map(x=>`<span class="badge bp" style="margin:2px">${x}</span>`).join('')}</div></div>`;
+  }
+  const unit=u.unit||(u.units?(u.units.join(', ')):'—');
+  document.getElementById('page-perfil').innerHTML=`
+    <div class="ph">Meu Perfil</div><div class="ps">Informações da conta e dados de acesso.</div>
+    <div class="phero"><div class="pav">${u.av}</div><div><div class="pname">${u.name}</div><div class="pemail">${u.email}</div><span class="badge ${rbc}">${RL[r]}</span></div></div>
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-id-badge"></i> Dados do Usuário</div>
+      <div class="ig">
+        <div class="ii"><div class="ii-lbl">Nome completo</div><div class="ii-val">${u.name}</div></div>
+        <div class="ii"><div class="ii-lbl">Perfil de acesso</div><div class="ii-val"><span class="badge ${rbc}">${RL[r]}</span></div></div>
+        <div class="ii"><div class="ii-lbl">Unidade</div><div class="ii-val">${unit}</div></div>
+        <div class="ii"><div class="ii-lbl">E-mail institucional</div><div class="ii-val" style="font-size:12px">${u.email}</div></div>
+        ${extra}
+      </div>
+      ${r==='diretor_geral'?`<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><button class="btn btn-navy btn-sm" onclick="nav('permissoes')"><i class="ti ti-shield-lock"></i> Gerenciar Permissões do Sistema</button></div>`:''}
+    </div>`;
+}
+
+// REGISTRO
+function initReg(){
+  const u=S.user,sel=document.getElementById('rcls');
+  sel.innerHTML='<option value="">Selecione...</option>';
+  (u.classes||[]).forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)});
+  document.getElementById('rdate').value=today();
+  goStep(1);
+}
+
+function onCls(){
+  const cls=document.getElementById('rcls').value;
+  document.getElementById('rdisc').value=cls?(S.user.disciplines[cls]||''):'';
+}
+
+function buildStep2(){
+  const cls=document.getElementById('rcls').value;
+  const stus=(STUDENTS[S.user.unit]&&STUDENTS[S.user.unit][cls])||[];
+  const grid=document.getElementById('sgrid2');
+  grid.innerHTML='';
+  if(!stus.length){grid.innerHTML='<div class="empty-state"><i class="ti ti-users-off"></i><p>Nenhum aluno cadastrado nesta turma.</p></div>';return}
+  stus.forEach(s=>{
+    const oTypesHtml=OTYPES.map((g,gi)=>`
+      <div class="ocat">
+        <div class="ocath"><div class="odot" style="background:${g.color}"></div>${g.cat}</div>
+        <div class="oitems">${g.items.map((it,ii)=>{
+          const eid='so-'+s.id+'-'+gi+'-'+ii;
+          const val=it.replace(/"/g,'&quot;');
+          return `<div class="oitem" onclick="togStudOcc('${s.id}',this,event)"><input type="checkbox" id="${eid}" value="${val}"><label for="${eid}">${it}</label></div>`;
+        }).join('')}</div>
+      </div>`).join('');
+    const card=document.createElement('div');
+    card.className='scard';card.id='sc-'+s.id;
+    card.innerHTML=`
+      <div class="scard-h" onclick="togStu('${s.id}')">
+        <div style="flex:1;min-width:0">
+          <div class="scard-name">${s.name}</div>
+          <div class="scard-cnt" id="scnt-${s.id}">Clique para selecionar ocorrências</div>
+        </div>
+        <i class="ti ti-chevron-right scard-ico" id="sico-${s.id}"></i>
+      </div>
+      <div class="scard-body" id="sbody-${s.id}" style="display:none">
+        ${oTypesHtml}
+        <div class="fg" style="margin-top:12px">
+          <label>Observação (opcional)</label>
+          <textarea id="sobs-${s.id}" placeholder="Descreva o contexto, se necessário..."></textarea>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function togStu(sid){
+  const body=document.getElementById('sbody-'+sid);
+  const card=document.getElementById('sc-'+sid);
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  card.classList.toggle('expanded',!open);
+}
+
+function togStudOcc(sid,el,ev){
+  const cb=el.querySelector('input');
+  if(ev&&ev.target!==cb)cb.checked=!cb.checked;
+  el.classList.toggle('sel',cb.checked);
+  updStuCnt(sid);
+}
+
+function updStuCnt(sid){
+  const n=document.querySelectorAll('#sbody-'+sid+' input:checked').length;
+  const cnt=document.getElementById('scnt-'+sid);
+  const card=document.getElementById('sc-'+sid);
+  if(n>0){cnt.textContent=n+' ocorrência(s) selecionada(s)';cnt.style.color='var(--blue)';}
+  else{cnt.textContent='Clique para selecionar ocorrências';cnt.style.color='';}
+  card.classList.toggle('has-occ',n>0);
+}
+
+function getStuTypes(sid){return Array.from(document.querySelectorAll('#sbody-'+sid+' input:checked')).map(i=>i.value)}
+function getTotalWithOccs(){return document.querySelectorAll('#sgrid2 .scard.has-occ').length}
+
+function goStep(n){
+  if(n>1){
+    if(!document.getElementById('rdate').value||!document.getElementById('rcls').value){alert('Selecione data e turma.');return}
+    if(n===2) buildStep2();
+  }
+  if(n>2&&getTotalWithOccs()===0){alert('Selecione ao menos uma ocorrência para ao menos um aluno.');return}
+  S.step=n;
+  document.querySelectorAll('.wstep').forEach(e=>e.classList.remove('active'));
+  document.getElementById('rs'+n).classList.add('active');
+  [1,2,3].forEach(i=>{
+    const ws=document.getElementById('ws'+i);ws.classList.remove('active','done');
+    if(i<n)ws.classList.add('done');else if(i===n)ws.classList.add('active');
+    if(i<3)document.getElementById('wl'+i).classList.toggle('done',i<n);
+  });
+  if(n===3)renderReview();
+  window.scrollTo(0,0);
+}
+
+function renderReview(){
+  const d=document.getElementById('rdate').value,c=document.getElementById('rcls').value,disc=document.getElementById('rdisc').value;
+  const cards=document.querySelectorAll('#sgrid2 .scard.has-occ');
+  let stuHtml='',count=0;
+  cards.forEach(card=>{
+    const sid=card.id.replace('sc-','');
+    const types=getStuTypes(sid);
+    if(!types.length) return;
+    count++;
+    const name=card.querySelector('.scard-name').textContent;
+    const obs=document.getElementById('sobs-'+sid).value;
+    stuHtml+=`<div style="padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:700;margin-bottom:6px">${name}</div>
+      <div>${types.map(t=>`<span class="badge ba" style="margin:2px;font-size:10px">${t}</span>`).join('')}</div>
+      ${obs?`<div style="font-size:12px;color:var(--text2);margin-top:5px;font-style:italic">"${obs}"</div>`:''}
+    </div>`;
+  });
+  document.getElementById('rbox').innerHTML=`
+    <div class="rrow"><span class="rlbl">Data</span><span class="rval">${fmtDate(d)}</span></div>
+    <div class="rrow"><span class="rlbl">Turma</span><span class="rval"><span class="badge bb">${c}</span></span></div>
+    <div class="rrow"><span class="rlbl">Disciplina</span><span class="rval">${disc||'—'}</span></div>
+    <div class="rrow"><span class="rlbl">Alunos</span><span class="rval"><strong>${count}</strong> aluno(s) com ocorrências</span></div>
+    <hr style="margin:10px 0">
+    ${stuHtml}`;
+}
+
+function submitOcc(){
+  const d=document.getElementById('rdate').value,c=document.getElementById('rcls').value,disc=document.getElementById('rdisc').value;
+  const cards=document.querySelectorAll('#sgrid2 .scard.has-occ');
+  let count=0;
+  cards.forEach(card=>{
+    const sid=card.id.replace('sc-','');
+    const types=getStuTypes(sid);
+    if(!types.length) return;
+    count++;
+    const name=card.querySelector('.scard-name').textContent;
+    const obs=document.getElementById('sobs-'+sid).value;
+    OCC.push({id:'o'+Date.now()+'_'+sid,sid,sname:name,cls:c,unit:S.user.unit,prof:S.user.name,disc,types,date:d,obs});
+  });
+  toast(count+' aluno(s) com ocorrências registradas!');
+  resetWiz();
+}
+
+function resetWiz(){
+  document.getElementById('rcls').value='';document.getElementById('rdisc').value='';
+  document.getElementById('rdate').value=today();
+  document.getElementById('sgrid2').innerHTML='';
+  goStep(1);
+}
+
+// PROFESSORES
+function renderProfessores(){
+  const u=S.user;
+  const profs=USERS.filter(x=>x.role==='professor'&&(u.role==='diretor_geral'||x.unit===u.unit));
+  document.getElementById('page-professores').innerHTML=`
+    <div class="ph">Gerenciar Professores</div>
+    <div class="ps">Professores cadastrados ${u.role==='diretor_geral'?'na rede':'na unidade '+u.unit}.</div>
+    <div class="flex jb ic mb4">
+      <span class="tsm tmut">${profs.length} professor(es)</span>
+      <button class="btn btn-navy" onclick="showAddProf()"><i class="ti ti-plus"></i> Novo Professor</button>
+    </div>
+    <div class="card">
+      ${profs.length===0?'<div class="empty-state"><i class="ti ti-users-off"></i><p>Nenhum professor cadastrado.</p></div>':
+        profs.map(p=>`<div class="plist-item">
+          <div class="plist-av">${p.av}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:700">${p.name}</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:4px">${p.email} · ${p.unit}</div>
+            <div>${(p.classes||[]).map(c=>`<span class="badge bb" style="margin:2px">${c}</span>`).join('')}</div>
+            ${Object.entries(p.disciplines||{}).map(([c,d])=>`<div style="font-size:11px;color:var(--text3)">${c}: <strong>${d}</strong></div>`).join('')}
+          </div>
+          <button class="btn btn-red btn-sm" onclick="delProf('${p.id}')"><i class="ti ti-trash"></i></button>
+        </div>`).join('')}
+    </div>`;
+}
+
+function showAddProf(){
+  const u=S.user;
+  const unitOpts=u.role==='diretor_geral'?UNITS_LIST.map(x=>`<option>${x}</option>`).join(''):`<option>${u.unit}</option>`;
+  const discOpts=DISC_LIST.map(d=>`<option>${d}</option>`).join('');
+  const body=`<div class="fr" style="gap:14px">
+    <div class="fg"><label>Nome Completo *</label><input type="text" id="pf-name" placeholder="Nome do professor"></div>
+    <div class="fr c2" style="margin:0;gap:14px">
+      <div class="fg"><label>E-mail *</label><input type="text" id="pf-email" placeholder="email@smm.edu.br"></div>
+      <div class="fg"><label>Senha *</label><input type="text" id="pf-pwd" placeholder="Senha"></div>
+    </div>
+    <div class="fg"><label>Unidade *</label><select id="pf-unit">${unitOpts}</select></div>
+    <div class="fg"><label>Turmas</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">${TURMAS_LIST.map((t,i)=>`<label style="display:flex;align-items:center;gap:6px;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;cursor:pointer"><input type="checkbox" id="pft-${i}" value="${t}" style="accent-color:var(--blue)"> ${t}</label>`).join('')}</div></div>
+    <div class="fg"><label>Disciplina Principal</label><select id="pf-disc">${discOpts}</select></div>
+  </div>`;
+  const foot=`<button class="btn btn-gh" onclick="closeModal()">Cancelar</button><button class="btn btn-navy" onclick="addProf()"><i class="ti ti-check"></i> Cadastrar Professor</button>`;
+  openModal('Novo Professor',body,foot);
+}
+
+function addProf(){
+  const name=document.getElementById('pf-name').value.trim();
+  const email=document.getElementById('pf-email').value.trim();
+  const pwd=document.getElementById('pf-pwd').value.trim();
+  const unit=document.getElementById('pf-unit').value;
+  const disc=document.getElementById('pf-disc').value;
+  if(!name||!email||!pwd){alert('Preencha nome, e-mail e senha.');return}
+  const turmas=Array.from(document.querySelectorAll('[id^="pft-"]:checked')).map(cb=>cb.value);
+  const av=name.split(' ').filter(w=>w.length>1).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+  const disciplines={};turmas.forEach(t=>disciplines[t]=disc);
+  USERS.push({id:'u'+Date.now(),name,email,password:pwd,role:'professor',av:av||'??',unit,classes:turmas,disciplines});
+  closeModal();toast('Professor cadastrado com sucesso!');renderProfessores();
+}
+
+function delProf(id){
+  if(!confirm('Remover este professor? Esta ação não pode ser desfeita.')) return;
+  const i=USERS.findIndex(u=>u.id===id);
+  if(i>=0) USERS.splice(i,1);
+  toast('Professor removido.');renderProfessores();
+}
+
+// ALUNOS
+function renderAlunos(){
+  const u=S.user;
+  const unitF=(u.role==='diretor_geral'?(document.getElementById('af-unit')?.value||''):u.unit)||'';
+  const clsF=document.getElementById('af-cls')?.value||'';
+  let stuList=[];
+  Object.entries(STUDENTS).forEach(([unit,turmas])=>{
+    if(u.role!=='diretor_geral'&&unit!==u.unit) return;
+    Object.entries(turmas).forEach(([cls,stus])=>{
+      stus.forEach(s=>stuList.push({...s,unit,cls}));
+    });
+  });
+  if(unitF) stuList=stuList.filter(s=>s.unit===unitF);
+  if(clsF) stuList=stuList.filter(s=>s.cls===clsF);
+  stuList.sort((a,b)=>a.name.localeCompare(b.name,'pt'));
+  const unitSel=u.role==='diretor_geral'?`<div class="ff"><label>Unidade</label><select id="af-unit" onchange="renderAlunos()"><option value="">Todas</option>${UNITS_LIST.map(x=>`<option${x===unitF?' selected':''}>${x}</option>`).join('')}</select></div>`:'';
+  document.getElementById('page-alunos').innerHTML=`
+    <div class="ph">Gerenciar Alunos</div>
+    <div class="ps">Alunos cadastrados ${u.role==='diretor_geral'?'na rede':'na unidade '+u.unit}.</div>
+    <div class="fbar">
+      <div class="ftit">Filtros</div>
+      <div class="fgrid">
+        ${unitSel}
+        <div class="ff"><label>Turma</label><select id="af-cls" onchange="renderAlunos()"><option value="">Todas</option>${TURMAS_LIST.map(t=>`<option${t===clsF?' selected':''}>${t}</option>`).join('')}</select></div>
+      </div>
+    </div>
+    <div class="flex jb ic mb4">
+      <span class="tsm tmut">${stuList.length} aluno(s)</span>
+      <button class="btn btn-navy" onclick="showAddStu()"><i class="ti ti-plus"></i> Novo Aluno</button>
+    </div>
+    <div class="card">
+      ${stuList.length===0?'<div class="empty-state"><i class="ti ti-user-off"></i><p>Nenhum aluno encontrado.</p></div>':
+        `<div class="twrap"><table style="min-width:450px"><thead><tr><th>Nome</th><th>Turma</th><th>Unidade</th><th></th></tr></thead><tbody>
+        ${stuList.map(s=>`<tr>
+          <td style="font-weight:700">${s.name}</td>
+          <td><span class="badge bb">${s.cls}</span></td>
+          <td><span class="badge bgr">${s.unit}</span></td>
+          <td><button class="btn btn-red btn-sm" onclick="delStu('${s.unit}','${s.cls}','${s.id}')"><i class="ti ti-trash"></i></button></td>
+        </tr>`).join('')}
+        </tbody></table></div>`}
+    </div>`;
+}
+
+function showAddStu(){
+  const u=S.user;
+  const unitOpts=u.role==='diretor_geral'?UNITS_LIST.map(x=>`<option>${x}</option>`).join(''):`<option>${u.unit}</option>`;
+  const body=`<div class="fr" style="gap:14px">
+    <div class="fg"><label>Nome Completo *</label><input type="text" id="sf-name" placeholder="Nome do aluno"></div>
+    <div class="fr c2" style="margin:0;gap:14px">
+      <div class="fg"><label>Unidade *</label><select id="sf-unit">${unitOpts}</select></div>
+      <div class="fg"><label>Turma *</label><select id="sf-cls">${TURMAS_LIST.map(t=>`<option>${t}</option>`).join('')}</select></div>
+    </div>
+  </div>`;
+  const foot=`<button class="btn btn-gh" onclick="closeModal()">Cancelar</button><button class="btn btn-navy" onclick="addStu()"><i class="ti ti-check"></i> Cadastrar Aluno</button>`;
+  openModal('Novo Aluno',body,foot);
+}
+
+function addStu(){
+  const name=document.getElementById('sf-name').value.trim();
+  const unit=document.getElementById('sf-unit').value;
+  const cls=document.getElementById('sf-cls').value;
+  if(!name){alert('Informe o nome do aluno.');return}
+  if(!STUDENTS[unit]) STUDENTS[unit]={};
+  if(!STUDENTS[unit][cls]) STUDENTS[unit][cls]=[];
+  STUDENTS[unit][cls].push({id:'s'+Date.now(),name});
+  closeModal();toast('Aluno cadastrado com sucesso!');renderAlunos();
+}
+
+function delStu(unit,cls,id){
+  if(!confirm('Remover este aluno?')) return;
+  if(STUDENTS[unit]&&STUDENTS[unit][cls])
+    STUDENTS[unit][cls]=STUDENTS[unit][cls].filter(s=>s.id!==id);
+  toast('Aluno removido.');renderAlunos();
+}
+
+// PERMISSOES (DG ONLY)
+function renderPermissoes(){
+  const roles=['professor','coordenador','diretor','diretor_geral'];
+  const labels=['Professor','Coordenador','Diretor','Dir. Geral'];
+  document.getElementById('page-permissoes').innerHTML=`
+    <div class="ph">Permissões de Acesso</div>
+    <div class="ps">Configure as permissões de cada perfil de usuário no sistema. Somente o Diretor Geral tem acesso a esta tela.</div>
+    <div class="card">
+      <div class="ctitle"><i class="ti ti-shield-lock"></i> Matriz de Permissões</div>
+      <div class="twrap" style="border:none">
+        <table class="pmatrix">
+          <thead><tr>
+            <th>Funcionalidade</th>
+            ${labels.map(l=>`<th>${l}</th>`).join('')}
+          </tr></thead>
+          <tbody>
+            ${PERMS_FEAT.map((feat,fi)=>`<tr>
+              <td>${feat}</td>
+              ${roles.map(r=>`<td>
+                <label class="tog">
+                  <input type="checkbox" ${PERMS_MTX[r][fi]?'checked':''} onchange="PERMS_MTX['${r}'][${fi}]=this.checked">
+                  <span class="tog-sl"></span>
+                </label>
+              </td>`).join('')}
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="flex jb ic mt4" style="padding-top:16px;border-top:1px solid var(--border)">
+        <span class="tsm tmut">Alterações afetam todos os usuários do sistema.</span>
+        <button class="btn btn-navy" onclick="toast('Permissões atualizadas com sucesso!')"><i class="ti ti-device-floppy"></i> Salvar Permissões</button>
+      </div>
+    </div>`;
+}
+
+// DASHBOARD
+function visOccs(){
+  const r=S.user.role,u=S.user;
+  if(r==='coordenador'||r==='diretor') return OCC.filter(o=>o.unit===u.unit);
+  return [...OCC];
+}
+
+function renderDash(){
+  const r=S.user.role;
+  document.getElementById('dsub').textContent={coordenador:`Dashboard da unidade ${S.user.unit}.`,diretor:`Painel completo da unidade ${S.user.unit}.`,diretor_geral:'Visão consolidada de toda a rede Santa Maria Minas.'}[r]||'';
+  const fuw=document.getElementById('fuw');
+  if(r==='diretor_geral'){
+    fuw.classList.remove('hidden');
+    const fu=document.getElementById('fu');fu.innerHTML='<option value="">Todas</option>';
+    [...new Set(visOccs().map(o=>o.unit))].sort().forEach(u=>{const op=document.createElement('option');op.value=u;op.textContent=u;fu.appendChild(op)});
+  } else fuw.classList.add('hidden');
+  const vo=visOccs();
+  popSel('fc',[...new Set(vo.map(o=>o.cls))].sort());
+  popSel('fp',[...new Set(vo.map(o=>o.prof))].sort());
+  popSel('fd',[...new Set(vo.map(o=>o.disc))].sort());
+  const t=new Date('2026-05-24'),s=new Date(t);s.setMonth(s.getMonth()-6);
+  document.getElementById('ff0').value=s.toISOString().split('T')[0];
+  document.getElementById('ft0').value=t.toISOString().split('T')[0];
+  document.getElementById('fst').value='';document.getElementById('fser').value='';
+  applyF();
+}
+
+function popSel(id,opts){
+  const el=document.getElementById(id);if(!el) return;const v=el.value;
+  el.innerHTML='<option value="">Todas</option>';
+  opts.forEach(o=>{const op=document.createElement('option');op.value=o;op.textContent=o;el.appendChild(op)});
+  if(opts.includes(v)) el.value=v;
+}
+
+function applyF(){
+  let o=visOccs();
+  const ff=document.getElementById('ff0').value,ft=document.getElementById('ft0').value,
+    fu=document.getElementById('fu')?.value||'',fc=document.getElementById('fc').value,
+    fser=document.getElementById('fser').value,fp=document.getElementById('fp').value,
+    fd=document.getElementById('fd').value,fst=document.getElementById('fst').value.toLowerCase();
+  if(ff) o=o.filter(x=>x.date>=ff);if(ft) o=o.filter(x=>x.date<=ft);
+  if(fu) o=o.filter(x=>x.unit===fu);if(fc) o=o.filter(x=>x.cls===fc);
+  if(fser) o=o.filter(x=>x.cls.startsWith(fser.split(' ')[0]+'º'));
+  if(fp) o=o.filter(x=>x.prof===fp);if(fd) o=o.filter(x=>x.disc===fd);
+  if(fst) o=o.filter(x=>x.sname.toLowerCase().includes(fst));
+  renderDC(o);
+}
+
+function clrF(){
+  const t=new Date('2026-05-24'),s=new Date(t);s.setMonth(s.getMonth()-6);
+  document.getElementById('ff0').value=s.toISOString().split('T')[0];
+  document.getElementById('ft0').value=t.toISOString().split('T')[0];
+  ['fu','fc','fser','fp','fd'].forEach(id=>{const el=document.getElementById(id);if(el) el.value=''});
+  document.getElementById('fst').value='';applyF();
+}
+
+function renderDC(occs){
+  const te=occs.reduce((s,o)=>s+o.types.length,0);
+  const us=new Set(occs.map(o=>o.sid)).size;
+  const tc={};occs.forEach(o=>o.types.forEach(t=>tc[t]=(tc[t]||0)+1));
+  const top=Object.entries(tc).sort((a,b)=>b[1]-a[1])[0];
+  const mc=occs.filter(o=>o.date.startsWith('2026-05')).length;
+  document.getElementById('dstats').innerHTML=`
+    <div class="sc"><div class="sc-icon ic-b"><i class="ti ti-clipboard-list"></i></div><div class="sc-lbl">Total de Ocorrências</div><div class="sc-val">${te}</div><div class="sc-sub">registros no período</div></div>
+    <div class="sc"><div class="sc-icon ic-g"><i class="ti ti-users"></i></div><div class="sc-lbl">Alunos Envolvidos</div><div class="sc-val">${us}</div><div class="sc-sub">alunos únicos</div></div>
+    <div class="sc"><div class="sc-icon ic-a"><i class="ti ti-alert-triangle"></i></div><div class="sc-lbl">Tipo mais Frequente</div><div class="sc-val" style="font-size:12px;font-weight:700;margin-top:6px;line-height:1.3">${top?top[0]:'—'}</div><div class="sc-sub">${top?top[1]+' registros':''}</div></div>
+    <div class="sc"><div class="sc-icon ic-p"><i class="ti ti-calendar-stats"></i></div><div class="sc-lbl">Em Maio/2026</div><div class="sc-val">${mc}</div><div class="sc-sub">este mês</div></div>`;
+  renderCharts(occs);renderRank(occs);renderTable(occs);
+}
+
+function renderCharts(occs){
+  const months=[],now=new Date('2026-05-20');
+  for(let i=6;i>=0;i--){const d=new Date(now);d.setMonth(d.getMonth()-i);months.push(d.toISOString().slice(0,7))}
+  const ml=months.map(m=>{const[y,mo]=m.split('-');return new Date(y,mo-1).toLocaleString('pt-BR',{month:'short',year:'2-digit'})});
+  const mc=months.map(m=>occs.filter(o=>o.date.startsWith(m)).length);
+  dChart('ctl',{type:'bar',data:{labels:ml,datasets:[{label:'Ocorrências',data:mc,backgroundColor:'#2558A8',borderRadius:6,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#F0F0F0'}},x:{grid:{display:false}}}}});
+  const cc={};OTYPES.forEach(g=>cc[g.cat]=0);
+  occs.forEach(o=>o.types.forEach(t=>{const g=OTYPES.find(gr=>gr.items.includes(t));if(g) cc[g.cat]++}));
+  dChart('ccat',{type:'doughnut',data:{labels:Object.keys(cc),datasets:[{data:Object.values(cc),backgroundColor:['#E74C3C','#E67E22','#D97706','#7C3AED'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:10}}},cutout:'60%'}});
+  const clsc={};occs.forEach(o=>clsc[o.cls]=(clsc[o.cls]||0)+1);
+  const scls=Object.entries(clsc).sort((a,b)=>b[1]-a[1]);
+  dChart('ccls',{type:'bar',data:{labels:scls.map(x=>x[0]),datasets:[{label:'Ocorrências',data:scls.map(x=>x[1]),backgroundColor:'#4A90D9',borderRadius:6,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'#F0F0F0'}},y:{grid:{display:false}}}}});
+}
+
+function dChart(id,cfg){
+  if(S.charts[id]){try{S.charts[id].destroy()}catch(e){}}
+  const c=document.getElementById(id);if(!c) return;
+  S.charts[id]=new Chart(c.getContext('2d'),cfg);
+}
+
+function renderRank(occs){
+  const tc={};occs.forEach(o=>o.types.forEach(t=>tc[t]=(tc[t]||0)+1));
+  const sorted=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,8),max=sorted[0]?sorted[0][1]:1;
+  const el=document.getElementById('rank');
+  if(!sorted.length){el.innerHTML='<div class="empty-state" style="padding:24px"><i class="ti ti-chart-off" style="font-size:32px"></i><p>Nenhum dado</p></div>';return}
+  el.innerHTML=sorted.map(([t,c],i)=>`<div class="ri"><div class="ri-n">${i+1}</div><div class="ri-info"><div class="ri-name">${t}</div><div class="ri-bg"><div class="ri-fill" style="width:${Math.round(c/max*100)}%"></div></div></div><div class="ri-cnt">${c}</div></div>`).join('');
+}
+
+function renderTable(occs){
+  const sorted=[...occs].sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById('tcnt').textContent=sorted.length+' registro(s)';
+  const tb=document.getElementById('tbody');
+  if(!sorted.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text3)"><i class="ti ti-mood-empty" style="font-size:36px;display:block;margin-bottom:10px;opacity:.35"></i>Nenhuma ocorrência encontrada.</td></tr>`;return}
+  tb.innerHTML=sorted.map(o=>`<tr>
+    <td style="white-space:nowrap;font-weight:700">${fmtDate(o.date)}</td>
+    <td style="font-size:12px;font-weight:700">${o.sname}</td>
+    <td><span class="badge bb">${o.cls}</span></td>
+    <td style="max-width:200px">${o.types.map(t=>`<span class="badge ba" style="margin:2px;display:inline-block;font-size:10px">${t}</span>`).join(' ')}</td>
+    <td style="font-size:12px">${o.prof.split(' ').slice(0,2).join(' ')}</td>
+    <td style="font-size:12px">${o.disc}</td>
+    <td><span class="badge bgr">${o.unit}</span></td>
+  </tr>`).join('');
+}
+
+// UTILS
+function today(){return new Date().toISOString().split('T')[0]}
+function fmtDate(s){const[y,m,d]=s.split('-');return`${d}/${m}/${y}`}
+function toast(msg){
+  document.getElementById('tmsg').textContent=msg;
+  const t=document.getElementById('toast');t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+</script>
+</body>
+</html>
